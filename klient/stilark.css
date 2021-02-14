@@ -1,0 +1,120 @@
+:root{
+    --font: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+html body{
+    padding: 0;
+    margin: 0;
+    background-color: rgb(224, 224, 224);
+}
+input{
+
+    border-radius: 3px;
+    border-top: 2px solid darkgray;
+    border-right: 2px solid darkgray;
+    border-left: 2px solid lightgray;
+    border-bottom: 2px solid lightgray;
+}
+button{
+    border-radius: 4px;
+}
+
+
+.header{
+    width: 50%;
+}
+.left{
+    float: left;
+}
+.right{
+    float: right;
+}
+
+.edges{
+    border: 1px solid gray;
+    margin: 0;
+}
+
+.melding{
+    text-align: center;
+    font-family: var(--font);
+}
+
+#tittel{
+    font-size: 50px;
+    font-family: var(--font);
+    color: rgb(78, 85, 164);
+    text-decoration: underline;
+}
+
+#kcontainer, #kundepanel
+{
+    margin-top: 10px;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 5px;
+    min-height: 150px;
+    background-color: white;
+    font-family: var(--font);
+}
+
+
+
+#parameter{
+    border: 1px solid gray;
+    border-radius: 5px;
+    width: 100%;
+}
+#parameter table{
+    width: 100%;
+}
+#parameter table tr{
+    width: 100%;
+}
+#parameter table tr td{
+    width: 33%;
+}
+#beregnKolonne{
+    width: 100%;
+    float: right;
+}
+#parameter label{
+    font-family: var(--font);
+}
+
+#lånetype{
+    border: 1px solid black;
+}
+
+#kunderegBut{
+    display: none;
+}
+
+#aktiveLån{
+    margin: auto;
+    margin-top: 5px;
+    height: 100px;
+    width: 100%;
+    display: none;
+    border-radius: 2px;
+    border-bottom: 2px solid lightgray;
+    border-left:  2px solid lightgray;
+    border-right: 2px solid darkgray;
+    border-top: 2px solid darkgray;
+}
+
+#lånTable{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#headerRow{
+    font-weight: 600;
+}
+
+#headerRow td{
+    border-bottom: 1px solid black;
+}
+#lånTable tbody tr:nth-child(even){
+    background-color: rgb(198, 198, 198);
+}

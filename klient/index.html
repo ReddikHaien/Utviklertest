@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="stilark.css">
+    <title>Document</title>
+</head>
+<body>
+    <h1 id="tittel">Lånekalkulatoren</h1>
+    <div id="kcontainer">
+        <div id="parameter">
+            <table>
+                <tr>
+                    <td>
+                        <label for="lånetype">Lånetype: </label>
+                        <select name="lånetype" id="lånetype"></select>
+                    </td>
+                    <td>
+                        <label for="sum">Lånesum: </label>
+                        <input type="number" name="sum" id="sum" class="tekstInput">
+                    </td>
+                    <td>
+                        <label for="år">År: </label>
+                        <input type="number" name="år" id="år" class="tekstInput">
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td id ="beregnKolonne">
+                        <button id="beregn">Beregn</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="resultat"></div>
+    </div>
+    <div id="kundepanel">
+        <div id="kundereg">
+            <label for="kundeId">KundeID:</label>
+            <input type="number" name="kundeId" id="kundeId" onchange="" class="tekstInput">
+            <label for="Fornavn">Fornavn:</label>
+            <input type="text" name="Fornavn" id="Fornavn" disabled class="tekstInput">
+            <label for="Etternavn">Etternavn:</label>
+            <input type="text" name="Etternavn" id="Etternavn" disabled class="tekstInput">
+            <button id="kunderegBut" onclick="request.registerKunde();">registrer</button>
+        </div>
+        <div id="aktiveLån">
+            
+        </div>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>
