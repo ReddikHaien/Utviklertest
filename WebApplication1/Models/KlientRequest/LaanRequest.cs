@@ -30,9 +30,8 @@ namespace WebApplication1.Models.KlientRequest
             {
                 if (context.LaaneTyper.Any( t => t.Id == this.LaaneTypeId))
                 {
-                    //Sjekke om lånesum og dato og slikt er lovlig
-
-                    return true;
+                    //Sjekke om lånesum og nedbetalingsår er lovlig
+                    return LaaneSum > 0 && Aar > 0;
                 }
             }
 

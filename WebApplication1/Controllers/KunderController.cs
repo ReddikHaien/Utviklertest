@@ -9,6 +9,11 @@ using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
+     ///<summary>
+     /// API for å hente info om kunder.
+     /// For nå er det bare for å hente for- og etternavn på kunder gitt kundeNr.
+     /// I tillegg til kan en slette kunder og deres tilhørende lån(for testing), og opprette nye kunder gitt at kundeID ikke er i bruk og kunden ikke er registrert fra fø
+    ///</summary>
     [Route("api/[controller]")]
     [ApiController]
     public class KunderController : Controller
@@ -21,6 +26,13 @@ namespace WebApplication1.Controllers
         }
 
         // GET: api/Kunder/{id}
+        /// <summary>
+        /// Henter kunden med gitt kundeId
+        /// </summary>
+        /// <param name="id">id til kunden</param>
+        /// <returns>
+        /// statuskode 200 med kunden, 404 hvis det ikke er gitt noen id, eller id-en ikke samsvarer med en kunde
+        /// </returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetKunde(int? id)
         {
@@ -40,12 +52,20 @@ namespace WebApplication1.Controllers
         }
 
         // POST: api/Kunder
+        /// <summary>
+        /// Registrerer en kunde
+        /// </summary>
+        /// <param name="kunde">kunden som skal registrererss</param>
+        /// <returns>
+        /// statuskode 200 om kunden ble registrert. 400 om kundeId-en er i bruk eller om kunden har en bruker fra før
+        /// </returns>
         [HttpPost]
         public async Task<IActionResult> Register(Kunde kunde)
         {
-            if (KundeExists(kunde))
+            //Sjekker om kundeId-en er i bruk eller om kunden har en bruker fra før
+            if (KundeExists(kunde) || _context.Kunder.Any(k => k.Fornavn.Equals(kunde.Fornavn) && k.Etternavn.Equals(kunde.Etternavn)) )
             {
-                Console.WriteLine("Kunden eksisterer " + kunde.Id);
+                //Console.WriteLine("Kunden eksisterer " + kunde.Id);
                 return BadRequest();
             }
             _context.Add(kunde);
@@ -55,6 +75,13 @@ namespace WebApplication1.Controllers
         }
 
         // DELETE: api/Kunder/{id}
+        /// <summary>
+        /// Fjerner kunden og alle lån som er koblet til denne kunden
+        /// </summary>
+        /// <param name="id">ID til kunden</param>
+        /// <returns>
+        /// statuskode 200 om kunden ble fjernet. 404 om Kunden ikke finnes
+        /// </returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -84,12 +111,16 @@ namespace WebApplication1.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Sjekker at Id-en ikke er i bruk og at kunden ikke er blitt registert fra før
+        /// </summary>
+        /// <param name="kunde">kunden som skal sjekkes</param>
+        /// <returns>true om kunden eksisterer</returns>
 
         private bool KundeExists(Kunde kunde)
         {
-            return _context.Kunder.Any(e => e.Id == kunde.Id || 
-                (e.Fornavn.ToUpper().Equals(kunde.Fornavn.ToUpper()) && 
-                 e.Etternavn.ToUpper().Equals(kunde.Etternavn.ToUpper())));
+            return _context.Kunder.Any(e => e.Id == kunde.Id);
         }
+     
     }
 }

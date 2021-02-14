@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
+
+
+    /// <summary>
+    /// API for å håndtere lånetyper
+    /// </summary>
     [ApiController]
-    [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
+    [Route("api/[controller]")]
     public class LaaneTypeController : Controller
     {
         private readonly BankContext _context;
@@ -22,15 +26,26 @@ namespace WebApplication1.Controllers
 
 
         //GET api/LaaneType
-        [Microsoft.AspNetCore.Mvc.HttpGet]
+        /// <summary>
+        /// Returnerer alle lånetypene som fins
+        /// </summary>
+        /// <returns>
+        /// statuskode 200 og en liste med alle lånetypene
+        /// </returns>
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<LaaneType>>> GetLåneTyper()
         {
-            return await _context.LaaneTyper.ToListAsync();
+            return Ok(await _context.LaaneTyper.ToListAsync());
         }
 
 
         //GET api/LaaneType/{id}
-        [Microsoft.AspNetCore.Mvc.HttpGet("{id}")]
+        /// <summary>
+        /// Henter lånetypen med den gitte id-en
+        /// </summary>
+        /// <param name="id">id til lånetypen</param>
+        /// <returns>statuskode 200 og lånetypen, 404 om id mangler eller om id ikke samsvarer med en lånetype</returns>
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetLåneType(int? id)
         {
             if (id == null)
@@ -50,8 +65,13 @@ namespace WebApplication1.Controllers
 
 
         // POST: api/LaaneType
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Legger til en ny lånetype
+        /// </summary>
+        /// <param name="laaneType">lånetypen som skal legges til</param>
+        /// <returns>
+        /// statuskode 200 om den ble lagt til, 400 om iden allerede er i bruk
+        /// </returns>
         [HttpPost]
         public async Task<ActionResult<LaaneType>> PostLåneType(LaaneType laaneType)
         {
@@ -67,6 +87,13 @@ namespace WebApplication1.Controllers
 
 
         //DELETE api/LaaneType/{id}
+        /// <summary>
+        /// fjerner lånetypen med den gitte id-en
+        /// </summary>
+        /// <param name="id">id til lånetypen</param>
+        /// <returns>
+        /// statuskode 200 om den ble fjernet, 400 om den ikke eksisterer fra før eller om det ikke er gitt noen id
+        /// </returns>
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteLåneType(int? id)
         {
@@ -85,6 +112,11 @@ namespace WebApplication1.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// sjekker om en gitt id samsvarer til en lånetype
+        /// </summary>
+        /// <param name="id">id-en som vi skal sjekke</param>
+        /// <returns>true om den samsvarer med en lånetype, feil ellers</returns>
         private bool LåneTypeExists(int id)
         {
             return _context.LaaneTyper.Any(e => e.Id == id);

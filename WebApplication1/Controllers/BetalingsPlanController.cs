@@ -10,6 +10,11 @@ using WebApplication1.Models.ServerResultat;
 
 namespace WebApplication1.Controllers
 {
+    ///<summary>
+    /// API for å lage betalingsplaner.
+    /// Brukeren sender inn en POST til api/BetalingsPlan og får en 
+    /// WebApplication1.Models.ServerResultat.BetalingsPlan tilbake
+    ///</summary>
 
     [Route("api/[controller]")]
     [ApiController]
@@ -21,8 +26,14 @@ namespace WebApplication1.Controllers
         {
             _context = context;
         }
-
-        // Post api/DataPlan
+        /// <summary>
+        /// Tar inn en BetalingsInfo og sender tilbake en BetalingsPlan. 
+        /// Lånetypen blir mottatt i form av en id
+        /// </summary>
+        /// <param name="info">info om lånet som skal beregnes</param>
+        /// <returns>
+        /// statuskode 200 og en betalingsplan, om infoen mangler returneres statuskoden 400, og om lånetypen ikke finnes returneres statuskode 404 
+        /// </returns>
         [HttpPost]
         public ActionResult<BetalingsPlan> PostBetalingsPlan(BetalingsPlanInfo info)
         {
@@ -33,25 +44,43 @@ namespace WebApplication1.Controllers
 
             var type = _context.LaaneTyper.FirstOrDefault(p => p.Id == info.LaaneTypeId);
 
+            if (type == null)
+            {
+                return NotFound("fant ikke laanetypen med id " + info.LaaneTypeId);
+            }
+
+            //innputvariabler
             decimal rente = type.Rente/36500m;
             decimal totalSum = info.Sum;
             int år = info.Aar;
             int mnd = år * 12;
+            
 
+            //pris per måned
             decimal fastSum = totalSum / mnd;
 
+            //hva som skal betales per måned
             decimal[] månedsPris = new decimal[mnd];
 
+            //total pris
             decimal totalSumMedRente = totalSum;
+            
             for (int i = 0; i < mnd; i++)
             {
                 decimal renteForMnd = (totalSum - fastSum * i) * rente;
+                
                 månedsPris[i] = renteForMnd + fastSum;
+
                 totalSumMedRente += renteForMnd;
             }
 
 
-            return Ok(new BetalingsPlan { FastMndPris = fastSum, LaaneTypen = type, TotalMndPris = månedsPris, TotalSum = totalSumMedRente });
+            return Ok(new BetalingsPlan { 
+                FastMndPris = fastSum, 
+                LaaneTypen = type, 
+                TotalMndPris = månedsPris, 
+                TotalSum = totalSumMedRente 
+            });
         }
     }
 }
