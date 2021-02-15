@@ -340,4 +340,4 @@ ASALocalRun/
 healthchecksdb
 
 # Ignorerer bygget klient fordi filstørrelsen er for stor
-klient-win32-x64
+klient-win32-x64/
