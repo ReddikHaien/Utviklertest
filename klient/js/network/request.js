@@ -42,12 +42,16 @@ function getLånetyper(cbd,cbe){
 }
 exports.getLånetyper = getLånetyper;
 
-function getBetalingsPlan(år,sum,type,cbd,cbe){
+function getBetalingsPlan(år,sum,type,skjema,cbd,cbe){
     let info = {
         LaaneTypeId: type,
         Sum: sum,
         Aar: år,
+        SkjemaId: skjema,
     };
+
+    console.log(info);
+
     makeRequest("POST","BetalingsPlan",JSON.stringify(info),cbd,cbe);
 }
 exports.getBetalingsPlan = getBetalingsPlan;
@@ -74,3 +78,27 @@ function getLånForKunde(kundeId,cbd,cbe){
     makeRequest("GET","Laan/Kunde/" + kundeId,"",cbd,cbe);
 }
 exports.getLånForKunde = getLånForKunde;
+
+function taOppLån(kundeId, typeId, sum, år, cbd, cbe, cbr){
+    let info = {
+        KundeId: kundeId,
+        LaaneTypeId: typeId,
+        LaaneSum: sum,
+        Aar: år,
+        Dato: new Date(),
+    };
+
+    makeRequest("POST","Laan/taOpp",JSON.stringify(info),cbd,cbe,cbr);
+}
+exports.taOppLån = taOppLån;
+
+function getLåneType (id,cbd,cbe){
+    makeRequest("GET","LaaneType/"+id,"",cbd,cbe);
+}
+exports.getLåneType = getLåneType;
+
+function getSkjemaer(cbd,cbe){
+    makeRequest("GET","Skjema","",cbd,cbe);
+}
+exports.getSkjemaer = getSkjemaer;
+

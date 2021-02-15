@@ -46,7 +46,7 @@ namespace WebApplication1.Controllers
         /// <param name="id">id til lånetypen</param>
         /// <returns>statuskode 200 og lånetypen, 404 om id mangler eller om id ikke samsvarer med en lånetype</returns>
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetLåneType(int? id)
+        public async Task<ActionResult<LaaneType>> GetLåneType(int? id)
         {
             if (id == null)
             {

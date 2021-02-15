@@ -338,3 +338,6 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+# Ignorerer bygget klient fordi filstørrelsen er for stor
+klient-win32-x64/

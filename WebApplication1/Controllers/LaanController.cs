@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApplication1.Models;
 using WebApplication1.Models.KlientRequest;
-
+using WebApplication1.Controllers.SkjemaTyper;
 namespace WebApplication1.Controllers
 {
 

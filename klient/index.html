@@ -8,7 +8,9 @@
     <title>Document</title>
 </head>
 <body>
-    <h1 id="tittel">Lånekalkulatoren</h1>
+    <div id="tittel">
+        <img src="./bilder/Logo.PNG" alt="Euforia">
+    </div>
     <div id="kcontainer">
         <div id="parameter">
             <table>
@@ -16,6 +18,7 @@
                     <td>
                         <label for="lånetype">Lånetype: </label>
                         <select name="lånetype" id="lånetype"></select>
+                        <label id="renteVisning"></label>
                     </td>
                     <td>
                         <label for="sum">Lånesum: </label>
@@ -25,8 +28,13 @@
                         <label for="år">År: </label>
                         <input type="number" name="år" id="år" class="tekstInput">
                     </td>
+                    <td>
+                        <label for="skjema">Skjema: </label>
+                        <select name="skjema" id="skjema"></select>
+                    </td>
                 </tr>
                 <tr>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td id ="beregnKolonne">

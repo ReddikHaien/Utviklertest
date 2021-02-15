@@ -1,5 +1,5 @@
 :root{
-    --font: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    --font: 'Trebuchet MS', 'Lucida Sans  Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 html body{
     padding: 0;
@@ -7,7 +7,6 @@ html body{
     background-color: rgb(224, 224, 224);
 }
 input{
-
     border-radius: 3px;
     border-top: 2px solid darkgray;
     border-right: 2px solid darkgray;
@@ -40,10 +39,18 @@ button{
 }
 
 #tittel{
-    font-size: 50px;
-    font-family: var(--font);
-    color: rgb(78, 85, 164);
-    text-decoration: underline;
+    width: 1000px;
+    height: 300px;
+    margin: auto;
+    margin-top: -50px;
+    overflow: hidden;
+}
+
+#tittel img{
+    margin-top: -140px;
+    width: 925px;
+    margin-left: 10px;
+    height: auto;
 }
 
 #kcontainer, #kundepanel
@@ -72,12 +79,19 @@ button{
     width: 100%;
 }
 #parameter table tr td{
-    width: 33%;
+    width: 25%;
 }
 #beregnKolonne{
-    width: 100%;
     float: right;
 }
+
+#resultat div table{
+    border-collapse: collapse;
+}
+#resultat div table tbody tr:nth-child(even){
+    background-color: lightgray;
+}
+
 #parameter label{
     font-family: var(--font);
 }
@@ -117,4 +131,8 @@ button{
 }
 #lånTable tbody tr:nth-child(even){
     background-color: rgb(198, 198, 198);
+}
+
+#renteVisning{
+    display: inline-block;
 }

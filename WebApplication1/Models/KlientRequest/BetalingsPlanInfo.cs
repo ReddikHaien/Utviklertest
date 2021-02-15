@@ -10,5 +10,7 @@ namespace WebApplication1.Models.KlientRequest
         public decimal Sum { get; set; }
         public int Aar { get; set; }
         public int LaaneTypeId {get; set; }
+
+        public int SkjemaId { get; set; }
     }
 }

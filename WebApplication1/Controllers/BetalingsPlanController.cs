@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿    using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using WebApplication1.Models;
 using WebApplication1.Models.KlientRequest;
 using WebApplication1.Models.ServerResultat;
-
+using WebApplication1.Controllers.SkjemaTyper;
 namespace WebApplication1.Controllers
 {
     ///<summary>
@@ -49,38 +49,32 @@ namespace WebApplication1.Controllers
                 return NotFound("fant ikke laanetypen med id " + info.LaaneTypeId);
             }
 
-            //innputvariabler
-            decimal rente = type.Rente/36500m;
-            decimal totalSum = info.Sum;
-            int år = info.Aar;
-            int mnd = år * 12;
+            AbstractSkjema skjema = SkjemaController.getSkjemaObj(info.SkjemaId);
             
-
-            //pris per måned
-            decimal fastSum = totalSum / mnd;
-
-            //hva som skal betales per måned
-            decimal[] månedsPris = new decimal[mnd];
-
-            //total pris
-            decimal totalSumMedRente = totalSum;
-            
-            for (int i = 0; i < mnd; i++)
+            if (skjema == null)
             {
-                decimal renteForMnd = (totalSum - fastSum * i) * rente;
-                
-                månedsPris[i] = renteForMnd + fastSum;
-
-                totalSumMedRente += renteForMnd;
+                return NotFound("Fant ikke skjematype med id " + info.SkjemaId);
             }
 
+            //innputvariabler
+            decimal rente = type.Rente/1200m;
+            decimal totalSum = info.Sum;
+            int mnd = info.Aar * 12;
 
-            return Ok(new BetalingsPlan { 
-                FastMndPris = fastSum, 
-                LaaneTypen = type, 
-                TotalMndPris = månedsPris, 
-                TotalSum = totalSumMedRente 
-            });
+            MaanedsPris[] pris = skjema.GetBetalingsPlan(totalSum, mnd, rente);
+
+            decimal fullBetaling = 0;
+
+            for (int i = 0; i < pris.Length; i++)
+            {
+                fullBetaling += pris[i].Rente + pris[i].Avdrag;
+            }
+
+            return Ok(new BetalingsPlan {
+                LaaneTypen = type,
+                Betalinger = pris,
+                TotalSum = fullBetaling
+            }) ;
         }
     }
 }

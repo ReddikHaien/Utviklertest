@@ -182,3 +182,6 @@ exports.init = function () {
 
     display.aktiveLån = document.getElementById("aktiveLån");
 };
+
+
+exports.visLån = visLån;

@@ -1,4 +1,6 @@
 const request = require("../network/request.js");
+const Kunde = require("./Kunde.js");
+const formatter = require("../util/formatering.js");
 
 const parameterInput = {
     /**
@@ -13,53 +15,87 @@ const parameterInput = {
      * @type {HTMLInputElement}
      */
     år: null,
+
+    /**
+     * @type {HTMLInputElement}
+     */
+    kundeId: null,
+    /**
+     * @type {HTMLSelectElement}
+     */
+    skjema: null,
 };
 
+function taOppLån(){
+    let år = Number(parameterInput.år.value);
+    let sum = Number(parameterInput.sum.value);
+    let type = Number(parameterInput.type.options[parameterInput.type.selectedIndex].value);
+    let kunde = Number(parameterInput.kundeId.value);
+    let skjema = Number(parameterInput.skjema.options[parameterInput.skjema.selectedIndex]);
+
+    if (!isNaN(kunde)){
+        request.taOppLån(kunde,type,sum,år,(data) =>{
+            console.log("data",data);
+        },(error) =>{
+            console.log("feil",error);
+        },(kode) =>{
+            if (kode < 400){
+                console.log("lån tatt opp");
+                Kunde.visLån(kunde);
+            }
+            else{
+                console.log("noe annet " + kode);
+            }
+        });
+    }
+}
+
 function BeregnButton(){
-    let år = parameterInput.år.value;
-    let sum = parameterInput.sum.value;
-    let type = parameterInput.type.options[parameterInput.type.selectedIndex].value;
-    request.getBetalingsPlan(Number(år),Number(sum),Number(type),(d) =>{
+    
+    let år = Number(parameterInput.år.value);
+    let sum = Number(parameterInput.sum.value);
+    let type = Number(parameterInput.type.options[parameterInput.type.selectedIndex].value);
+    let skjema = Number(parameterInput.skjema.options[parameterInput.skjema.selectedIndex].value);
+
+    request.getBetalingsPlan(år,sum,type,skjema,(d) =>{
         
         let res = JSON.parse(d);
         console.log(res);
 
-
+        let genInfoT = document.createElement("table");
+        genInfoT.style.width = "100%";
+        let genInfoB = genInfoT.appendChild(document.createElement("tbody"));
+        genInfoB.style.width = "100%";
+        let genInfoR = genInfoB.appendChild(document.createElement("tr"));
+        genInfoR.style.width = "100%";
+        let totalSum = genInfoR.appendChild(document.createElement("td"));
+        totalSum.style.width = "100";
+        totalSum.innerHTML = "Total sum: " + res.totalSum.toFixed(2);
 
         let theader = document.createElement("table");
         theader.style.width = "100%";
         
         let h = document.createElement("thead");
         
-        let headerRow = document.createElement("tr");
-        
-        let headerDato = document.createElement("td");
-        headerDato.innerHTML = "Dato";
-        headerDato.style.width = "50%";
-
-        let headerSum = document.createElement("td");
-        headerSum.innerHTML = "Sum";
-        
-
-        headerRow.appendChild(headerDato);
-        headerRow.appendChild(headerSum);
-        h.appendChild(headerRow);
+        h.appendChild(formatter.lagTabellRad("Dato","Avdrag","Rente","Sum","Gjenstående lån"));
 
         let b = document.createElement("tbody");
         b.style.width = "100%";
 
-        for (let i = 0; i < res.totalMndPris.length; i++){
-            let rad = document.createElement("tr");
-            
-            let rdato = document.createElement("td");
-            rdato.innerHTML = i;
-            rdato.style.width = "50%";
-            let rsum = document.createElement("td");
-            rsum.innerHTML = res.totalMndPris[i].toFixed(2);
+        let dato = new Date();
 
+        let gjenstående = sum;
+        for (let i = 0; i < res.betalinger.length; i++){
+            gjenstående -= res.betalinger[i].avdrag;
+            dato.setMonth(dato.getMonth() + 1);
+            let rad = formatter.lagTabellRad(
+                dato.toLocaleDateString(),
+                formatter.formatValuta(res.betalinger[i].avdrag),
+                formatter.formatValuta(res.betalinger[i].rente),
+                formatter.formatValuta(res.betalinger[i].rente + res.betalinger[i].avdrag),
+                formatter.formatValuta(gjenstående)
+            );
 
-            rad.appendChild(rdato);
-            rad.appendChild(rsum);
             b.appendChild(rad);
         }
 
@@ -69,25 +105,27 @@ function BeregnButton(){
         let tbodycontainer = document.createElement("div");
         tbodycontainer.style.overflow = "auto";
         tbodycontainer.style.width = "100%";
-        tbodycontainer.style.height = "150px";
+        tbodycontainer.style.height = "200px";
 
-        let tbodytable = document.createElement("table");
+        let tbodytable = tbodycontainer.appendChild(document.createElement("table"));
         tbodytable.style.width = "100%";
 
         tbodytable.appendChild(b);
-        tbodycontainer.appendChild(tbodytable);
 
+        let taOppLånBut = document.createElement("button");
+        taOppLånBut.innerHTML = "Ta opp lån";
+        taOppLånBut.onclick = taOppLån;
+        taOppLånBut.style.marginTop = "10px";
         document.getElementById("resultat").innerHTML = "";
+        document.getElementById("resultat").appendChild(genInfoT);
         document.getElementById("resultat").appendChild(theader);
         document.getElementById("resultat").appendChild(tbodycontainer);
+        document.getElementById("resultat").appendChild(taOppLånBut);
 
     },(e) =>{
         document.getElementById("resultat").innerText = e;
     });
 }
-
-window.onload = () =>{
-};
 
 exports.init = function(){
         
@@ -95,11 +133,12 @@ exports.init = function(){
     parameterInput.type = document.getElementById("lånetype");
     parameterInput.sum = document.getElementById("sum");
     parameterInput.år = document.getElementById("år");
-
+    parameterInput.kundeId = document.getElementById("kundeId");
+    parameterInput.skjema = document.getElementById("skjema");
     //Setter opp knapper
     document.getElementById("beregn").onclick = BeregnButton;
+    parameterInput.type.onchange = selectorOnChange;    
     
-
     //Henter lånetyper fra server
 
     request.getLånetyper(
@@ -113,10 +152,39 @@ exports.init = function(){
                 child.text = t.navn; 
                 
                 parameterInput.type.appendChild(child);
+
+                
             });
+
+
+            parameterInput.type.onchange();
         },(error) =>{
 
             document.getElementById("resultat").innerText = error;
         }
     );
+    
+    request.getSkjemaer(
+        data =>{
+            console.log(data);
+            let typer = JSON.parse(data);
+            for (let i = 0; i < typer.length; i++){
+                let opt = parameterInput.skjema.appendChild(document.createElement("option"));
+                opt.value = typer[i].id;
+                opt.innerText = typer[i].name;
+            }
+        },
+        error =>{
+            console.log(error);
+        }
+    );
 };
+
+function selectorOnChange(){
+    let id = this.options[this.selectedIndex].value;
+    request.getLåneType(id,(data) =>{
+        let t = JSON.parse(data);
+        document.getElementById("renteVisning").innerHTML = "Rente: " + t.rente;
+    },
+    ()=>{});
+}

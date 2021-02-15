@@ -4,12 +4,14 @@
   "description": "Klientprogrammet for utviklertesten",
   "main": "index.js",
   "scripts": {
-    "test": "electron ."
+    "test": "electron .",
+    "start": "electron-packager ."
   },
   "keywords": [],
   "author": "Fredrik Eide Fluge",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^11.2.3"
+    "electron": "^11.2.3",
+    "electron-packager": "^15.2.0"
   }
 }
