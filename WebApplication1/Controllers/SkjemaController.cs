@@ -14,8 +14,8 @@ namespace WebApplication1.Controllers
     {
         private static readonly AbstractSkjema[] skjemaer = new AbstractSkjema[]
         {
-            new AnnuitetslånSkjema(),
             new SerielånSkjema(),
+            new AnnuitetslånSkjema(),
         };
 
         //Setter opp id til skjematypene slik at skjemaer[skjema.id] == skjema

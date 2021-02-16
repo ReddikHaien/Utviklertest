@@ -82,7 +82,7 @@ namespace WebApplication1.Controllers
             _context.LaaneTyper.Add(laaneType);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetLåneType), new { Id = laaneType.Id }, laaneType);
+            return Ok();
         }
 
 

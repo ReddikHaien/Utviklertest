@@ -29,8 +29,8 @@ namespace WebApplication1.Controllers.Tests
             LaaneTypeController controller = new LaaneTypeController(context);
 
             var type = await controller.GetLåneTyper();
-
-            Assert.IsInstanceOfType(type.Result.GetType(), typeof(OkObjectResult));
+            
+            Assert.IsInstanceOfType(type.Result, typeof(OkObjectResult));
         }
 
         [TestMethod()]
@@ -50,6 +50,44 @@ namespace WebApplication1.Controllers.Tests
 
             var ukjentID = await controller.GetLåneType(10000);
             Assert.IsInstanceOfType(ukjentID.Result, typeof(NotFoundResult));
+        }
+
+        [TestMethod()]
+        public async Task PostLåneType()
+        {
+            using var context = new BankContext(true, ContextOptions);
+            LaaneTypeController controller = new LaaneTypeController(context);
+
+            //Legger til en ny type
+            var leggTil = await controller.PostLåneType(new LaaneType
+            {
+                Id = 4,
+                Navn = "TestPost",
+                Rente = 10.5m
+            });
+            Assert.IsInstanceOfType(leggTil.Result, typeof(OkResult));
+
+            var antallf = await controller.GetLåneTyper();
+
+            Assert.IsInstanceOfType(antallf.Result, typeof(OkObjectResult));
+
+            int antall = ((IEnumerable<LaaneType>)((ObjectResult)antallf.Result).Value).Count();
+
+            Assert.IsTrue(antall == 4);
+
+            //fjerner typen
+            var fjernet = await controller.DeleteLåneType(4);
+            Assert.IsInstanceOfType(fjernet, typeof(OkResult));
+
+            var antalle = await controller.GetLåneTyper();
+
+            Assert.IsInstanceOfType(antalle.Result, typeof(OkObjectResult));
+
+            antall = ((IEnumerable<LaaneType>)((ObjectResult)antalle.Result).Value).Count();
+
+            Assert.IsTrue(antall == 3);
+
+
         }
     }
 }
